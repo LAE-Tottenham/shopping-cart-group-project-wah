@@ -5,8 +5,9 @@ exchange_rates = {
     'EUR': 1.15,
 }
 
-def check_currency_exists(currency):
-    return
+def check_currency_exists(currency_rate,):
+    if currency_rate in exchange_rates.keys():
+        return currency_rate
 
 def currency_convert(original_c, new_c, amount):
     # your code here
