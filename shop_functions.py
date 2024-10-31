@@ -1,3 +1,8 @@
+import pyfiglet
+import termcolor
+menu_ascii = pyfiglet.figlet_format("Menu")
+print(termcolor.colored(menu_ascii, color='red'))
+
 menu = {
     'Bread': 1.20,
     'Milk': 1.15,
