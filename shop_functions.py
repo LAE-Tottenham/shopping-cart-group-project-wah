@@ -32,7 +32,6 @@ def start_shop():
       else:
         print(f"Sorry, '{item}' is not available.")
 
-start_shop()
 
 import geopy.distance
 def calculate_delivery_cost(postcode):
