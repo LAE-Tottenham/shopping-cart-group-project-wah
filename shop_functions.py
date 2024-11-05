@@ -1,63 +1,64 @@
 import pyfiglet
-import termcolor
-menu_ascii = pyfiglet.figlet_format("Menu")
-print(termcolor.colored(menu_ascii, color='red'))
+from geopy.distance import geodesic
 
-menu = {
-    'Bread': 1.20,
-    'Milk': 1.15,
-    'Chocoloate': 0.5,
-    'Flour': 1.25,
-    'Water': 1.00,
-    'Sweets': 2.00,
-    'Coke': 1.70,
-    'Monster': 1.80,
-    'Lemonade': 0.90,
-    'Vodka': 14.20,
-}
+def shopping_cart():
+    # Display title
+    title = pyfiglet.figlet_format("Online Shopping Cart")
+    print(title)
 
-def start_shop():
-  while True:
-      print("What you would like to buy? ")
-      print('\n'.join("{}: {}".format(k, v) for k, v in menu.items()))
-      item = input("Enter the item you want to buy (or 'q' to quit): ").strip()
-      if item.lower() == 'q':
-        break
-      if item in menu:
-        try:
-          quantity = int(input(f"How many {item} do you want? "))
-          if quantity <= 0:
-            print("Please enter a valid quantity (greater than 0).")
-            continue
-          
-          total_cost = menu[item] * quantity
-          print(f"Total cost for {quantity} {item}: £{total_cost:.2f}")
-        except ValueError:
-          print("Invalid quantity. Please enter a number.")
-      else:
-        print(f"Sorry, '{item}' is not available.")
+    # List of products with their prices
+    products = {
+        'Bread': 1.20,
+        'Milk': 1.15,
+        'Chocoloate': 0.5,
+        'Flour': 1.25,
+        'Water': 1.00,
+        'Sweets': 2.00,
+        'Coke': 1.70,
+        'Monster': 1.80,
+        'Lemonade': 0.90,
+        'Vodka': 14.20,
+    }
+
+    # Display products
+    print("Available Products:")
+    for product, price in products.items():
+        print(f"{product}: £{price:.2f}")
+
+    # User selects products
+    selected_products = []
+    while True:
+        choice = input("Select a product (or type 'done' to finish): ")
+        if choice.lower() == 'done':
+            break
+        if choice in products:
+            selected_products.append(products[choice])
+        else:
+            print("Invalid choice. Please try again.")
+
+    # Calculate total price
+    total_price = sum(selected_products)
+    print(f"Total Price: £{total_price:.2f}")
+
+    # Get delivery postcode and calculate delivery price
+    delivery_postcode = input("Enter your delivery postcode: ")
+
+    delivery_location = (51.6115, -0.0697)
+    user_location = get_coordinates(delivery_postcode)
+
+    # Calculate delivery cost
+    if user_location:
+        distance = geodesic(delivery_location, user_location).miles
+        delivery_cost = distance
+        total_cost = total_price + delivery_cost
+        print(f"Delivery Cost: £{delivery_cost:.2f}")
+        print(f"Total Cost (including delivery): £{total_cost:.2f}")
+    else:
+        print("Could not calculate delivery distance. Please check your postcode.")
 
 
-import geopy.distance
-def calculate_delivery_cost(postcode):
-  london_coords = (51.5814, 0.0841)  # Coordinates for London N17 0BX
-  try:
-    from geopy.geocoders import Nominatim
-    geolocator = Nominatim(user_agent="my-app")
-    location = geolocator.geocode(postcode)
-    if location is None:
-      raise ValueError("Invalid postcode.")
-    
-    target_coords = (location.latitude, location.longitude)
+def get_coordinates(postcode):
+    return (51.5074, -0.1278)
 
-    distance_miles = geopy.distance.geodesic(london_coords, target_coords).miles
-    delivery_cost = distance_miles * 1.00
-    return delivery_cost
-  except ValueError as e:
-    print(f"Error: {e}")
-    return None
-
-postcode = input("Enter a postcode:  ")
-cost = calculate_delivery_cost(postcode)
-if cost is not None:
-  print(f"Delivery cost for {postcode}: £{cost:.2f}")
+if __name__ == "__main__":
+    shopping_cart()
